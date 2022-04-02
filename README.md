@@ -1,6 +1,7 @@
 # casper-node-setup
 
-## Scripts
+## Quck Settup lastest 1.4.4
+
 ### Clean up
 If you were running previous node on this box, this will clean up state If packages are not installed, the apt remove may give errors, this is not a problem
 ```
@@ -53,6 +54,10 @@ sudo /etc/casper/node_util.py start
 ### Monitor the node syncing
 ```
 /etc/casper/node_util.py watch
+```
+#### Check the node log
+```
+sudo tail -fn100 /var/log/casper/casper-node.log /var/log/casper/casper-node.stderr.log
 ```
 
 When you run the watch command, expect to see something like this:
