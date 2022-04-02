@@ -1,9 +1,9 @@
 # casper-node-setup
 
 ## Scripts
-Clean up
+### Clean up
 If you were running previous node on this box, this will clean up state If packages are not installed, the apt remove may give errors, this is not a problem
-
+```
 sudo systemctl stop casper-node-launcher.service
 sudo apt remove -y casper-client
 sudo apt remove -y casper-node
@@ -11,29 +11,53 @@ sudo apt remove -y casper-node-launcher
 sudo rm /etc/casper/casper-node-launcher-state.toml
 sudo rm -rf /etc/casper/1_*
 sudo rm -rf /var/lib/casper/*
-Setup Casper Labs repo for packages
+```
+
+### Setup Casper Labs repo for packages
+```
 echo "deb https://repo.casperlabs.io/releases" bionic main | sudo tee -a /etc/apt/sources.list.d/casper.list
 curl -O https://repo.casperlabs.io/casper-repo-pubkey.asc
 sudo apt-key add casper-repo-pubkey.asc
 sudo apt update
-Install casper-node-launcher, casper-client, and jq
-sudo apt install -y casper-client casper-node-launcher jq
-Install all protocols
-sudo -u casper /etc/casper/node_util.py stage_protocols casper.conf
+```
 
-Validator Keys
+### Install casper-node-launcher, casper-client, and jq
+```
+sudo apt install -y casper-client casper-node-launcher jq
+```
+
+### Install all protocols
+```
+sudo -u casper /etc/casper/node_util.py stage_protocols casper.conf
+```
+
+
+### Validator Keys
 If you do not have keys, you can create them
 
+```
 sudo -u casper casper-client keygen /etc/casper/validator_keys
-Get a trusted hash
+```
+
+### Get a trusted hash
+```
 sudo sed -i "/trusted_hash =/c\trusted_hash = '$(casper-client get-block --node-address http://3.14.161.135:7777 -b 20 | jq -r .result.block.hash | tr -d '\n')'" /etc/casper/1_0_0/config.toml
-Start the node
+```
+
+### Start the node
+```
 sudo /etc/casper/node_util.py rotate_logs
 sudo /etc/casper/node_util.py start
-Monitor the node syncing
+```
+
+### Monitor the node syncing
+```
 /etc/casper/node_util.py watch
+```
+
 When you run the watch command, expect to see something like this:
 
+```
 Last Block: 630151 (Era: 4153)
 Peer Count: 297
 Uptime: 4days 6h 40m 18s 553ms
@@ -51,7 +75,8 @@ RPC: Ready
     Tasks: 12 (limit: 4915)
    CGroup: /system.slice/casper-node-launcher.service
            ├─ 2934 /usr/bin/casper-node-launcher
-           └─16842 /var/lib/casper/bin/1_4_5/casper-node validator /etc/casper/1_4_5/config.toml```
+           └─16842 /var/lib/casper/bin/1_4_5/casper-node validator /etc/casper/1_4_5/config.toml
+```
 
 If your `casper-node-launcher status` for not show active (running) with an increasing time, you are either not running or restarting. 
 
